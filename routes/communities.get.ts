@@ -10,6 +10,7 @@ export default defineEventHandler(async (event) => {
     .select({
       maxRecords: 10,
       view: "Grid view",
+      fields: ["Name", "Description"],
     })
     .eachPage(function page(records, fetchNextPage) {
       console.log("records", records);
