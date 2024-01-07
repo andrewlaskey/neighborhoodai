@@ -1,21 +1,29 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "My Collection",
-    "description": "",
+    "title": "NeighborhoodGPT Message Board API",
+    "description": "This API has all of the actions necessary for NeighborhoodGPT's message board. It allows users to create communities, add posts to communities, and get all posts for a specific community.",
     "version": "1.0.0"
   },
+  "servers": [
+    {
+      "url": "https://neighborhoodai.vercel.app"
+    }
+  ],
+  "tags": [],
   "paths": {
     "/communities/:id/add-post": {
       "post": {
         "description": "Adds a single post to a community board.",
         "summary": "Add post to Community",
+        "operationId": "addPostToCommunity",
         "tags": [],
         "parameters": [
           {
             "name": "id",
-            "description": "",
-            "in": "query",
+            "description": "The Airtable row ID of the community board to add the post to.",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "string"
             },
@@ -29,9 +37,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "example": {
-                    "updated": true
-                  }
+                  "$ref": "#/components/schemas/CreatePostResponse"
                 }
               }
             }
@@ -51,11 +57,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "example": {
-                  "userName": "Jon Doe",
-                  "body": "What's your favorite place to get Pizza? 🍕"
-                }
+                "$ref": "#/components/schemas/CreatePost"
               }
             }
           }
@@ -67,6 +69,7 @@
       "get": {
         "description": "Returns a list of all communities",
         "summary": "Get Communities",
+        "operationId": "getCommunities",
         "tags": [],
         "parameters": [],
         "responses": {
@@ -78,39 +81,39 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "example": {
-                      "id": "recW2Gz85b2zGQhqL",
-                      "name": "92102",
-                      "description": "Community board for zip code 92102"
+                    "schema": {
+                      "$ref": "#/components/schemas/Community"
                     }
                   }
                 }
               }
             }
+          },
+          "401": {
+            "description": "authorization failed"
+          },
+          "422": {
+            "description": "validation failed"
+          },
+          "500": {
+            "description": "unknown server error"
           }
         },
-        "401": {
-          "description": "authorization failed"
-        },
-        "422": {
-          "description": "validation failed"
-        },
-        "500": {
-          "description": "unknown server error"
-        }
-      },
-      "security": []
+        "security": []
+      }
     },
     "/posts/:communityName": {
       "get": {
         "description": "Returns a list of all the posts for a specific community board.",
         "summary": "Get Posts by Community Name",
+        "operationId": "getPostsByCommunityName",
         "tags": [],
         "parameters": [
           {
             "name": "communityName",
-            "description": "",
-            "in": "query",
+            "description": "The name of the community board to get posts for.",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "string"
             },
@@ -126,11 +129,8 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "example": {
-                      "id": "recVKtOH9zW8VQL3j",
-                      "Created": "2024-01-06T21:14:00.000Z",
-                      "Body": "I love Secret Sister for their dog biscuits!! Bark! Bark! 🐶",
-                      "UserName": "Winston"
+                    "schema": {
+                      "$ref": "#/components/schemas/Post"
                     }
                   }
                 }
@@ -152,14 +152,16 @@
     },
     "/communities/:id": {
       "get": {
-        "description": "",
+        "description": "Returns a single community by ID",
         "summary": "Get Community by ID",
+        "operationId": "getCommunityById",
         "tags": [],
         "parameters": [
           {
             "name": "id",
-            "description": "",
-            "in": "query",
+            "description": "The Airtable row ID of the community board to get.",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "string"
             },
@@ -172,12 +174,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "example": {
-                    "id": "recW2Gz85b2zGQhqL",
-                    "name": "92102",
-                    "description": "Community board for zip code 92102"
-                  }
+                  "$ref": "#/components/schemas/Community"
                 }
               }
             }
@@ -196,17 +193,78 @@
       }
     }
   },
-  "servers": [
-    {
-      "url": "https://neighborhoodai.vercel.app"
-    }
-  ],
-  "tags": [],
   "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+    "schemas": {
+      "Community": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The Airtable row ID of the community board.",
+            "example": "recW2Gz85b2zGQhqL"
+          },
+          "Name": {
+            "type": "string",
+            "description": "The name of the community board.",
+            "example": "92102"
+          },
+          "Description": {
+            "type": "string",
+            "description": "The description of the community board.",
+            "example": "Community board for zip code 92102"
+          }
+        }
+      },
+      "Post": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The Airtable row ID of the post.",
+            "example": "recVKtOH9zW8VQL3j"
+          },
+          "UserName": {
+            "type": "string",
+            "description": "The name of the user who created the post.",
+            "example": "Winston"
+          },
+          "Body": {
+            "type": "string",
+            "description": "The body of the post.",
+            "example": "I love Secret Sister for their dog biscuits!! Bark! Bark! 🐶"
+          },
+          "Created": {
+            "type": "string",
+            "description": "The date the post was created.",
+            "format": "date-time",
+            "example": "2024-01-06T21:14:00.000Z"
+          }
+        }
+      },
+      "CreatePost": {
+        "type": "object",
+        "properties": {
+          "userName": {
+            "type": "string",
+            "description": "The name of the user who created the post.",
+            "example": "Winston"
+          },
+          "body": {
+            "type": "string",
+            "description": "The body of the post.",
+            "example": "I love Secret Sister for their dog biscuits!! Bark! Bark! 🐶"
+          }
+        }
+      },
+      "CreatePostResponse": {
+        "type": "object",
+        "properties": {
+          "updated": {
+            "type": "boolean",
+            "description": "Whether or not the post was successfully added to the community board.",
+            "example": true
+          }
+        }
       }
     }
   }
