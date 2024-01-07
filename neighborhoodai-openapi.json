@@ -25,7 +25,6 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
                   "$ref": "#/components/schemas/CreatePostResponse"
                 }
               }
@@ -86,6 +85,45 @@
           },
           "500": {
             "description": "unknown server error"
+          }
+        },
+        "security": []
+      },
+      "post": {
+        "description": "Creates a single community board.",
+        "summary": "Create Community",
+        "operationId": "createCommunity",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successfully created community",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePostResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "authorization failed"
+          },
+          "422": {
+            "description": "validation failed"
+          },
+          "500": {
+            "description": "unknown server error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommunity"
+              }
+            }
           }
         },
         "security": []
@@ -257,6 +295,21 @@
             "type": "boolean",
             "description": "Whether or not the post was successfully added to the community board.",
             "example": true
+          }
+        }
+      },
+      "CreateCommunity": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the community board.",
+            "example": "92102"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the community board.",
+            "example": "Community board for zip code 92102"
           }
         }
       }
