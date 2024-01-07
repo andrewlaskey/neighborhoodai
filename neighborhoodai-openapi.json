@@ -12,24 +12,13 @@
   ],
   "tags": [],
   "paths": {
-    "/communities/:id/add-post": {
+    "/communities/add-post": {
       "post": {
         "description": "Adds a single post to a community board.",
         "summary": "Add post to Community",
         "operationId": "addPostToCommunity",
         "tags": [],
-        "parameters": [
-          {
-            "name": "id",
-            "description": "The Airtable row ID of the community board to add the post to.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "example": "recW2Gz85b2zGQhqL"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "successfully added post to community",
@@ -102,7 +91,7 @@
         "security": []
       }
     },
-    "/posts/:communityName": {
+    "/posts/{communityName}": {
       "get": {
         "description": "Returns a list of all the posts for a specific community board.",
         "summary": "Get Posts by Community Name",
@@ -150,7 +139,7 @@
         "security": []
       }
     },
-    "/communities/:id": {
+    "/communities/{id}": {
       "get": {
         "description": "Returns a single community by ID",
         "summary": "Get Community by ID",
@@ -244,6 +233,11 @@
       "CreatePost": {
         "type": "object",
         "properties": {
+          "communityId": {
+            "type": "string",
+            "description": "The Airtable row ID of the community board to add the post to.",
+            "example": "recW2Gz85b2zGQhqL"
+          },
           "userName": {
             "type": "string",
             "description": "The name of the user who created the post.",
