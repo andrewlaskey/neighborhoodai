@@ -6,12 +6,33 @@ export default defineEventHandler(async (event) => {
     "appkWnHbz7wdymW3m"
   );
 
+  const communities = await base("Community")
+    .select({
+      filterByFormula: `{Name} = "${body.communityName}"`,
+    })
+    .firstPage()
+    .then((records) => {
+      return records.map((record) => ({
+        id: record.id,
+        ...record.fields,
+      }));
+    });
+
+  if (communities.length === 0) {
+    return {
+      status: 404,
+      body: {
+        message: "Community not found",
+      },
+    };
+  }
+
   await base("Posts")
     .create({
       UserName: body.userName,
       Body: body.body,
       Created: new Date().toISOString(),
-      Community: [body.communityId],
+      Community: [communities.at(0).id],
     })
     .then((record) => {
       console.log("record id", record.getId());

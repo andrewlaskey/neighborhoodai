@@ -233,10 +233,10 @@
       "CreatePost": {
         "type": "object",
         "properties": {
-          "communityId": {
+          "communityName": {
             "type": "string",
-            "description": "The Airtable row ID of the community board to add the post to.",
-            "example": "recW2Gz85b2zGQhqL"
+            "description": "The name the community board to add the post to.",
+            "example": "92102"
           },
           "userName": {
             "type": "string",
