@@ -1,4 +1,4 @@
-# Nitro Minimal Starter
+# Neighborhood AI (GPT)
 
 Look at the [Nitro documentation](https://nitro.unjs.io/) to learn more.
 
